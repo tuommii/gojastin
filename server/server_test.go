@@ -21,9 +21,6 @@ func BenchmarkStartTimer(b *testing.B) {
 	}
 }
 
-// Test counter reset
-// Test visitors get removed
-
 func TestHomeHandle(t *testing.T) {
 	s := New("test")
 	s.Log(false)

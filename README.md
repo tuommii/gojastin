@@ -7,9 +7,15 @@ Gojastin is a server measuring times between requests. Live: http://timer.miikka
 ## Run
 `make`
 
+## Test
+`make test`
+
+### Benchmark
+```make bench```
+
 ## Todo
 - [x] Basic styles
-- [ ] Visitor based ratelimiting
+- [ ] Visitor based rate limiting
 - [ ] [sync.Pool](https://developer20.com/using-sync-pool/index.html)
 - [ ] Template for "result"
 - [ ] Testing

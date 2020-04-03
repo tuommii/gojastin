@@ -51,10 +51,10 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if took > timeLimit {
-			w.Write([]byte(fmt.Sprintf("Too slow: %s", took)))
+			w.Write([]byte(fmt.Sprintf("\tToo slow: %.4s\n\tTimelimit was: %.3s", took, timeLimit)))
 			return
 		}
-		w.Write([]byte(fmt.Sprintf("Fast enough: %s", took)))
+		w.Write([]byte(fmt.Sprintf("\tFast enough: %.4s\n\tTimelimit was: %s", took, timeLimit)))
 	}
 }
 

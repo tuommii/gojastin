@@ -8,7 +8,9 @@ WIP.
 ## Run
 `make`
 
-## Development Notes
+## Server Notes
+Log: `goaccess /var/log/nginx/access.log -c`
+
 Open port: `sudo ufw allow $PORT-WANTED`
 
 ```

@@ -62,10 +62,9 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Middleware limiter
+// Global limiter
 func (s *server) Limit(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Global limiter
 		if s.limiter.Allow() == false {
 			http.Error(w, http.StatusText(429), http.StatusTooManyRequests)
 			return

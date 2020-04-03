@@ -106,7 +106,9 @@ const html = `<!DOCTYPE html>
 		<a href="/{{.Counter}}">Link</a>
 		<br />
 		<br />
-		<p>Compiled: {{.BuildTime}}</p>
+		<p>Server compiled: {{.BuildTime}}</p>
+		<br />
+		<p>Created by: <a href="https://github.com/tuommii">Miikka Tuominen</p>
 	</center>
 </body>
 </html>

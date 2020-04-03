@@ -90,6 +90,16 @@ const html = `<!DOCTYPE html>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Timer</title>
+	<style>
+		body { margin-top: 1rem; }
+		h1, h3, p a { font-family: -apple-system, BlinkMacSystemFont, Ubuntu, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
+		h1, h3, p a { color: #444; }
+		h1 { font-weight: 900; }
+		h1 span { font-size: 1rem; font-weight: normal; }
+		a, a:visited { color: #0366d6; }
+		.compiled { font-size: 12px; margin-top: 0.5rem}
+		.link { font-size: 2rem; }
+	</style>
 	<script>
 		if(performance.navigation.type == 2) {
 			location.reload(true);
@@ -98,13 +108,15 @@ const html = `<!DOCTYPE html>
 </head>
 <body>
 	<center>
-		<h1>Time to click: {{.MaxTime}}sec</h1>
-		<a href="/{{.Counter}}">Link</a>
+		<h1><span>TIME TO CLICK:</span> {{.MaxTime}}<span> sec</span></h1>
+		<br />
+		<a class="link" href="/{{.Counter}}">LINK</a>
 		<br />
 		<br />
-		<p>Server compiled: {{.BuildTime}}</p>
 		<br />
-		<p>Created by: <a href="https://github.com/tuommii">Miikka Tuominen</p>
+		<br />
+		<p>Created by: <a href="https://github.com/tuommii">Miikka Tuominen</a></p>
+		<p class="compiled">Server compiled: {{.BuildTime}}</p>
 	</center>
 </body>
 </html>

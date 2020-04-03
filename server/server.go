@@ -21,6 +21,8 @@ type server struct {
 	templ   *template.Template
 	mu      sync.Mutex
 	limiter *rate.Limiter
+
+	// Is logging enabled, default true
 	logging bool
 }
 

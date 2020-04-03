@@ -8,7 +8,14 @@ import (
 	"time"
 )
 
+// older than this gets removed
 const timeAlive = time.Second * 30
+
+// after this counter is set back to 1
+const resetCounter = 1000
+
+// maximux time for waiting second request (sec)
+const maxDeadline = 7
 
 // visitor holds data for each request (visitor)
 type visitor struct {
@@ -22,7 +29,7 @@ type visitor struct {
 // NewVisitor creates new visitor struct with timestamp
 func newVisitor() *visitor {
 	v := &visitor{lastSeen: time.Now()}
-	v.deadline = (time.Duration(rand.Intn(10) + 1)) * time.Second
+	v.deadline = (time.Duration(rand.Intn(maxDeadline) + 1)) * time.Second
 	return v
 }
 
@@ -32,7 +39,7 @@ func (s *server) startTimer() {
 	s.counter++
 	// Prevent filling memory with unclosed timers
 	// also prevents integer overflow
-	if s.counter >= 1000 {
+	if s.counter >= resetCounter {
 		s.counter = 1
 	}
 	s.mu.Unlock()

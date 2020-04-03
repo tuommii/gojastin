@@ -22,5 +22,6 @@ Gojastin is a server measuring times between requests. Live: http://timer.miikka
 - [x] Testing
 - [ ] Test counter reset
 - [ ] Test visitors get removed
+- [ ] Test config for bad values
 
 - [x] Easier way to change times

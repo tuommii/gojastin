@@ -61,17 +61,17 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 	} else if path == "/favicon.ico" {
 		// Dont count favicon
 	} else {
-		took, timeLimit, err := s.stopTimer(path[1:])
+		measure, timeLimit, err := s.stopTimer(path[1:])
 		if err != nil {
 			log.Println(err)
 			w.Write([]byte("Error"))
 			return
 		}
-		if took > timeLimit {
-			w.Write([]byte(fmt.Sprintf("\tToo slow: %.4s\n\tTimelimit was: %.3s", took, timeLimit)))
+		if measure > timeLimit {
+			w.Write([]byte(fmt.Sprintf("\tToo slow: %.4s\n\tTimelimit was: %.3s", measure, timeLimit)))
 			return
 		}
-		w.Write([]byte(fmt.Sprintf("\tFast enough: %.4s\n\tTimelimit was: %s", took, timeLimit)))
+		w.Write([]byte(fmt.Sprintf("\tFast enough: %.4s\n\tTimelimit was: %s", measure, timeLimit)))
 	}
 }
 
@@ -89,7 +89,7 @@ func (s *server) Limit(next http.HandlerFunc) http.HandlerFunc {
 func (s *server) serveTemplate(w http.ResponseWriter) {
 	data := struct {
 		Counter   int
-		MaxTime   float64
+		Deadline  float64
 		BuildTime string
 	}{
 		s.counter,
@@ -124,7 +124,7 @@ const html = `<!DOCTYPE html>
 </head>
 <body>
 	<center>
-		<h1><span>TIME TO CLICK:&nbsp;&nbsp;&nbsp;</span> {{.MaxTime}}<span> sec</span></h1>
+		<h1><span>TIME TO CLICK:&nbsp;&nbsp;&nbsp;</span> {{.Deadline}}<span> sec</span></h1>
 		<br />
 		<a class="link" href="/{{.Counter}}">LINK</a>
 		<br />

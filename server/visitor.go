@@ -32,7 +32,7 @@ func (s *server) startTimer() {
 	// Prevent filling memory with unclosed timers
 	// also prevents integer overflow
 	if s.counter >= s.config.Reset {
-		s.counter = 1
+		s.counter = 0
 	}
 	s.mu.Unlock()
 	s.visitors[s.counter] = newVisitor(s.config.Deadline)

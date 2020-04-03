@@ -9,6 +9,7 @@ const removeInterval = time.Second * 120
 const alive = time.Second * 30
 
 // after this counter is set back to 1
+// max counter is one less
 const reset = 1000
 
 // maximux time (sec) to send second request

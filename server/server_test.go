@@ -24,11 +24,14 @@ func BenchmarkStartTimer(b *testing.B) {
 func TestHomeHandle(t *testing.T) {
 	s := New("test")
 	s.Log(false)
+	s.config.Reset = 10
 	server := httptest.NewServer(s)
 	defer server.Close()
 
-	// Maybe some testing tables later
-	for i := 0; i < 100; i++ {
+	var count int
+
+	// Check counter reset also
+	for i := 0; i < s.config.Reset*3; i++ {
 		resp, err := http.Get(server.URL)
 		if err != nil {
 			t.Fatal(err)
@@ -36,12 +39,13 @@ func TestHomeHandle(t *testing.T) {
 		if resp.StatusCode != http.StatusOK {
 			t.Fatalf("Wrong status: %d\n", resp.StatusCode)
 		}
+		count++
+		wanted := count % s.config.Reset
 
-		// i starts from 0, my counter not
-		if s.counter != i+1 {
-			t.Errorf("Sended nth(%d) request, and counter was %d\n", i, s.counter)
+		if s.counter != wanted {
+			t.Errorf("#%d request, counter was %d %d\n", count, wanted, s.counter)
 		} else {
-			t.Log("#", i, " request, and counter was ", s.counter)
+			t.Log("#", count, "req, want:", wanted, "got:", s.counter)
 		}
 	}
 }

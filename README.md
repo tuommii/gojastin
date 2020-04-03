@@ -1,6 +1,8 @@
 # gojastin
 Proof of Concept Backend for https://github.com/hivehelsinki/remote-challs/tree/master/chall03
 
+Challenge was fun but server side seemed far more interesting so I decided try to do my own.
+
 WIP.
 
 ## Run

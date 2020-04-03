@@ -8,26 +8,18 @@ import (
 	"time"
 )
 
-// older than this gets removed
-const timeAlive = time.Second * 30
-
-// after this counter is set back to 1
-const resetCounter = 1000
-
-// maximux time for waiting second request (sec)
-const maxDeadline = 7
-
 // visitor holds data for each request (visitor)
 type visitor struct {
 	// limiter  *rate.Limiter
 	lastSeen time.Time
+	// time to send second request
 	deadline time.Duration
 	// Example for future use
 	body string
 }
 
 // NewVisitor creates new visitor struct with timestamp
-func newVisitor() *visitor {
+func newVisitor(maxDeadline int) *visitor {
 	v := &visitor{lastSeen: time.Now()}
 	v.deadline = (time.Duration(rand.Intn(maxDeadline) + 1)) * time.Second
 	return v
@@ -39,12 +31,12 @@ func (s *server) startTimer() {
 	s.counter++
 	// Prevent filling memory with unclosed timers
 	// also prevents integer overflow
-	if s.counter >= resetCounter {
+	if s.counter >= s.config.ResetCounter {
 		s.counter = 1
 	}
 	s.mu.Unlock()
-	s.visitors[s.counter] = newVisitor()
-	if s.logging {
+	s.visitors[s.counter] = newVisitor(s.config.MaxDeadline)
+	if s.config.Logging {
 		log.Printf("ID: [%d], COUNT: [%d]\n", s.counter, len(s.visitors))
 	}
 }
@@ -60,7 +52,7 @@ func (s *server) stopTimer(query string) (time.Duration, time.Duration, error) {
 		return 0, 0, errors.New("[Key] error")
 	}
 	delta := now.Sub(s.visitors[id].lastSeen)
-	if s.logging {
+	if s.config.Logging {
 		log.Println("Time:", delta)
 	}
 	timeLimit := s.visitors[id].deadline
@@ -71,10 +63,13 @@ func (s *server) stopTimer(query string) (time.Duration, time.Duration, error) {
 // CleanVisitors cleans memory
 func (s *server) CleanVisitors() {
 	for {
-		time.Sleep(time.Minute * 2)
-		for ip, v := range s.visitors {
-			if time.Since(v.lastSeen) > timeAlive {
-				delete(s.visitors, ip)
+		time.Sleep(s.config.WatchInterval)
+		for id, v := range s.visitors {
+			if time.Since(v.lastSeen) > s.config.TimeAlive {
+				delete(s.visitors, id)
+				if s.config.Logging {
+					log.Println("Visitor deleted!")
+				}
 			}
 		}
 	}

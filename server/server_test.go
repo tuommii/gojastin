@@ -21,19 +21,21 @@ func BenchmarkStartTimer(b *testing.B) {
 	}
 }
 
+// Test counter reset
+// Test visitors get removed
+
 func TestHomeHandle(t *testing.T) {
 	s := New("test")
 	s.Log(false)
 	server := httptest.NewServer(s)
 	defer server.Close()
 
-	// for i := range []int{100, -200} {
+	// Maybe some testing tables later
 	for i := 0; i < 100; i++ {
 		resp, err := http.Get(server.URL)
 		if err != nil {
 			t.Fatal(err)
 		}
-
 		if resp.StatusCode != http.StatusOK {
 			t.Fatalf("Wrong status: %d\n", resp.StatusCode)
 		}

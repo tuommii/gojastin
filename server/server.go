@@ -8,6 +8,7 @@ import (
 	"text/template"
 
 	"golang.org/x/time/rate"
+	"miikka.xyz/gojastin/config"
 )
 
 type server struct {
@@ -21,9 +22,7 @@ type server struct {
 	templ   *template.Template
 	mu      sync.Mutex
 	limiter *rate.Limiter
-
-	// Is logging enabled, default true
-	logging bool
+	config  *config.Config
 }
 
 // Implement http.Handler interface, for httptest purposes
@@ -33,7 +32,9 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // New return's new server
 func New(buildtime string) *server {
-	s := &server{build: buildtime, logging: true}
+	s := &server{build: buildtime}
+	c := config.New()
+	s.config = c
 	s.visitors = make(map[int]*visitor)
 	s.limiter = rate.NewLimiter(1, 100)
 	templ, err := template.New("home").Parse(html)
@@ -49,7 +50,7 @@ func (s *server) SetRateLimit(r rate.Limit, b int) {
 }
 
 func (s *server) Log(enabled bool) {
-	s.logging = enabled
+	s.config.Logging = enabled
 }
 
 func (s *server) Router(w http.ResponseWriter, r *http.Request) {

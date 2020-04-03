@@ -9,12 +9,15 @@ run: build
 build:
 	go build -o chall03 -ldflags '-X main.buildTime=$(DATE)' cmd/gojastin/main.go
 
+# Runs test and bench: both go test -bench . ./...
+# Now only tests
 test:
 	go test ./...
 
-# Runs without other tests, remove -run=XXX
+# Runs without other tests
 bench:
 	go test -run=XXX -bench . ./...
+
 
 deploy: build
 	ssh -t $(DIOC_USER)@$(DIOC_IP) "sudo service chall03 stop"

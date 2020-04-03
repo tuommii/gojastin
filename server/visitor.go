@@ -37,7 +37,9 @@ func (s *server) startTimer() {
 	}
 	s.mu.Unlock()
 	s.visitors[s.counter] = newVisitor()
-	log.Printf("ID: [%d], COUNT: [%d]\n", s.counter, len(s.visitors))
+	if s.logging {
+		log.Printf("ID: [%d], COUNT: [%d]\n", s.counter, len(s.visitors))
+	}
 }
 
 // stopTimer is called when second request is received
@@ -51,7 +53,9 @@ func (s *server) stopTimer(query string) (time.Duration, time.Duration, error) {
 		return 0, 0, errors.New("[Key] error")
 	}
 	delta := now.Sub(s.visitors[id].lastSeen)
-	log.Println("Time:", delta)
+	if s.logging {
+		log.Println("Time:", delta)
+	}
 	timeLimit := s.visitors[id].deadline
 	delete(s.visitors, id)
 	return delta, timeLimit, nil

@@ -21,11 +21,12 @@ type server struct {
 	templ   *template.Template
 	mu      sync.Mutex
 	limiter *rate.Limiter
+	logging bool
 }
 
 // New return's new server
 func New(buildtime string) *server {
-	s := &server{build: buildtime}
+	s := &server{build: buildtime, logging: true}
 	s.visitors = make(map[int]*visitor)
 	s.limiter = rate.NewLimiter(1, 100)
 	templ, err := template.New("home").Parse(html)
@@ -38,6 +39,10 @@ func New(buildtime string) *server {
 
 func (s *server) SetRateLimit(r rate.Limit, b int) {
 	s.limiter = rate.NewLimiter(r, b)
+}
+
+func (s *server) Log(enabled bool) {
+	s.logging = enabled
 }
 
 func (s *server) Router(w http.ResponseWriter, r *http.Request) {

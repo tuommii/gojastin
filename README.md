@@ -6,3 +6,11 @@ Gojastin is a server measuring times between requests. **Live**: http://timer.mi
 
 ## Run
 `make`
+
+## Todo
+- [x] Basic styles
+- [ ] Visitor based ratelimiting
+- [ ] [sync.Pool](https://developer20.com/using-sync-pool/index.html)
+- [ ] Template for "result"
+- [ ] Testing
+- [ ] Easier way to change times

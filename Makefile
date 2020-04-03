@@ -4,7 +4,7 @@ DATE := $(shell date +%d.%m.%Y)
 all: run
 
 run: build
-	./main
+	./chall03
 
 build:
 	go build -o chall03 -ldflags '-X main.buildTime=$(DATE)' cmd/gojastin/main.go

@@ -7,7 +7,7 @@ import (
 	"miikka.xyz/gojastin/server"
 )
 
-var buildTime = "NOT DYNAMIC YET"
+var buildTime = "This will change when compiled with Makefile"
 
 func main() {
 	s := server.New(buildTime)

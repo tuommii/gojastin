@@ -24,6 +24,11 @@ type server struct {
 	logging bool
 }
 
+// Implement http.Handler interface, for httptest purposes
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.Router(w, r)
+}
+
 // New return's new server
 func New(buildtime string) *server {
 	s := &server{build: buildtime, logging: true}

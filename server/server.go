@@ -28,7 +28,11 @@ func New(buildtime string) *server {
 	s := &server{build: buildtime}
 	s.visitors = make(map[int]*visitor)
 	s.limiter = rate.NewLimiter(1, 100)
-	s.templ, _ = template.New("home").Parse(html)
+	templ, err := template.New("home").Parse(html)
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.templ = templ
 	return s
 }
 

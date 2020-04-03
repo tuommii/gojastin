@@ -19,7 +19,7 @@ Gojastin is a server measuring times between requests. Live: http://timer.miikka
 - [ ] [sync.Pool](https://developer20.com/using-sync-pool/index.html)
 - [ ] Template for "result"
 - [x] Testing
-- [ ] Test counter reset
+- [x] Test counter reset
 - [ ] Test visitors get removed
 - [ ] Test config for bad values
 - [x] Easier way to change times

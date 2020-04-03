@@ -49,10 +49,6 @@ func (s *server) SetRateLimit(r rate.Limit, b int) {
 	s.limiter = rate.NewLimiter(r, b)
 }
 
-func (s *server) Log(enabled bool) {
-	s.config.Logging = enabled
-}
-
 func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.EscapedPath()
 	if path == "/" {

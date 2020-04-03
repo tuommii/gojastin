@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const cleanUpTime = time.Second * 30
+const timeAlive = time.Second * 30
 
 // visitor holds data for each request (visitor)
 type visitor struct {
@@ -26,12 +26,12 @@ func newVisitor() *visitor {
 	return v
 }
 
-// startTiming is called when first request is received
-func (s *server) startTiming() {
+// startTimer is called when first request is received
+func (s *server) startTimer() {
 	s.mu.Lock()
 	s.counter++
 	// Prevent filling memory with unclosed timers
-	// also prevents integer going over max value
+	// also prevents integer overflow
 	if s.counter >= 1000 {
 		s.counter = 1
 	}
@@ -40,8 +40,8 @@ func (s *server) startTiming() {
 	log.Printf("ID: [%d], COUNT: [%d]\n", s.counter, len(s.visitors))
 }
 
-// stopTiming is called when second request is received
-func (s *server) stopTiming(query string) (time.Duration, time.Duration, error) {
+// stopTimer is called when second request is received
+func (s *server) stopTimer(query string) (time.Duration, time.Duration, error) {
 	now := time.Now()
 	id, err := strconv.Atoi(query)
 	if err != nil {
@@ -57,12 +57,12 @@ func (s *server) stopTiming(query string) (time.Duration, time.Duration, error) 
 	return delta, timeLimit, nil
 }
 
-// CleanVisitors checks every minute inactive visitors and delete's them
+// CleanVisitors cleans memory
 func (s *server) CleanVisitors() {
 	for {
 		time.Sleep(time.Minute * 2)
 		for ip, v := range s.visitors {
-			if time.Since(v.lastSeen) > cleanUpTime {
+			if time.Since(v.lastSeen) > timeAlive {
 				delete(s.visitors, ip)
 			}
 		}

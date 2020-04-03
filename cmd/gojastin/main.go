@@ -7,20 +7,7 @@ import (
 	"miikka.xyz/gojastin/server"
 )
 
-// sudo vim /lib/systemd/system/timergo.service
-// [Unit]
-// Description=goweb
-
-// [Service]
-// Type=simple
-// Restart=always
-// RestartSec=5s
-// ExecStart=/home/user/go/go-web/main
-
-// [Install]
-// WantedBy=multi-user.target
-
-var buildTime = "NOT DYNAMIC"
+var buildTime = "NOT DYNAMIC YET"
 
 func main() {
 	s := server.New(buildTime)

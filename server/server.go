@@ -10,26 +10,22 @@ import (
 	"golang.org/x/time/rate"
 )
 
-//https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
 type server struct {
-	// Works as ID
-	// TODO: Mutex
+	// Works as ID/IP
 	counter int
 	// All requests gets unique key defined by counter
 	visitors map[int]*visitor
-	// Max time between requests
-	// maxDuration time.Duration
+	// Compilation timestamp gets injected here
+	build string
 
 	templ   *template.Template
 	mu      sync.Mutex
 	limiter *rate.Limiter
-	build   string
 }
 
 // New return's new server
 func New(buildtime string) *server {
 	s := &server{build: buildtime}
-	// 1 per 3 second
 	s.visitors = make(map[int]*visitor)
 	s.limiter = rate.NewLimiter(1, 100)
 	s.templ, _ = template.New("home").Parse(html)
@@ -43,12 +39,12 @@ func (s *server) SetRateLimit(r rate.Limit, b int) {
 func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.EscapedPath()
 	if path == "/" {
-		s.startTiming()
+		s.startTimer()
 		s.serveTemplate(w)
 	} else if path == "/favicon.ico" {
 		// Dont count favicon
 	} else {
-		took, timeLimit, err := s.stopTiming(path[1:])
+		took, timeLimit, err := s.stopTimer(path[1:])
 		if err != nil {
 			log.Println(err)
 			w.Write([]byte("Error"))

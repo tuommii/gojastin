@@ -1,5 +1,5 @@
 
-DATE := $(shell date +%d.%m.%Y.%H:%M)
+DATE := $(shell date +%d.%m.%Y)
 
 all: run
 
@@ -9,7 +9,6 @@ run: build
 
 build:
 	go build -ldflags '-X main.buildTime=$(DATE)' cmd/gojastin/main.go
-	# go build cmd/gojastin/main.go
 
 deploy: build
 	mv main chall03

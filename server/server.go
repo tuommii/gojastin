@@ -108,7 +108,7 @@ const html = `<!DOCTYPE html>
 </head>
 <body>
 	<center>
-		<h1><span>TIME TO CLICK:</span> {{.MaxTime}}<span> sec</span></h1>
+		<h1><span>TIME TO CLICK:&nbsp;&nbsp;&nbsp;</span> {{.MaxTime}}<span> sec</span></h1>
 		<br />
 		<a class="link" href="/{{.Counter}}">LINK</a>
 		<br />

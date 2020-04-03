@@ -19,9 +19,9 @@ type visitor struct {
 }
 
 // NewVisitor creates new visitor struct with timestamp
-func newVisitor(maxDeadline int) *visitor {
+func newVisitor(deadline int) *visitor {
 	v := &visitor{lastSeen: time.Now()}
-	v.deadline = (time.Duration(rand.Intn(maxDeadline) + 1)) * time.Second
+	v.deadline = (time.Duration(rand.Intn(deadline) + 1)) * time.Second
 	return v
 }
 
@@ -31,11 +31,11 @@ func (s *server) startTimer() {
 	s.counter++
 	// Prevent filling memory with unclosed timers
 	// also prevents integer overflow
-	if s.counter >= s.config.ResetCounter {
+	if s.counter >= s.config.Reset {
 		s.counter = 1
 	}
 	s.mu.Unlock()
-	s.visitors[s.counter] = newVisitor(s.config.MaxDeadline)
+	s.visitors[s.counter] = newVisitor(s.config.Deadline)
 	if s.config.Logging {
 		log.Printf("ID: [%d], COUNT: [%d]\n", s.counter, len(s.visitors))
 	}
@@ -63,9 +63,9 @@ func (s *server) stopTimer(query string) (time.Duration, time.Duration, error) {
 // CleanVisitors cleans memory
 func (s *server) CleanVisitors() {
 	for {
-		time.Sleep(s.config.WatchInterval)
+		time.Sleep(s.config.RemoveInterval)
 		for id, v := range s.visitors {
-			if time.Since(v.lastSeen) > s.config.TimeAlive {
+			if time.Since(v.lastSeen) > s.config.Alive {
 				delete(s.visitors, id)
 				if s.config.Logging {
 					log.Println("Visitor deleted!")

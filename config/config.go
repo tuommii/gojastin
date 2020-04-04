@@ -17,7 +17,7 @@ const deadline = 7
 
 // Config for server
 type Config struct {
-	// older than this gets removed in background routine
+	// (sec) older than this gets removed in background routine
 	Alive time.Duration
 	// Every n look old visitors to be deleted (sec)
 	RemoveInterval time.Duration

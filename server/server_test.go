@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func TestNew(t *testing.T) {
@@ -21,14 +22,18 @@ func BenchmarkStartTimer(b *testing.B) {
 	}
 }
 
+// Loop over counter max value and check if counter resets
+// afterwards len(visitors) should be same as max value
+// Then testing
 func TestHomeHandle(t *testing.T) {
 	s := New("test")
 	s.config.Logging = false
 	s.config.Reset = 10
+	s.config.Alive = 2 * time.Second
+	s.config.RemoveInterval = 2 * time.Second
 	server := httptest.NewServer(s)
 	defer server.Close()
 
-	// Check counter reset also
 	for i := 0; i < s.config.Reset*3; i++ {
 		resp, err := http.Get(server.URL)
 		if err != nil {
@@ -42,5 +47,17 @@ func TestHomeHandle(t *testing.T) {
 		if s.counter != wanted {
 			t.Errorf("#%d request, counter was %d %d\n", i+1, wanted, s.counter)
 		}
+	}
+
+	if s.config.Reset != len(s.visitors) {
+		t.Errorf("#%d rounds, len(visitors): %d\n", s.config.Reset, len(s.visitors))
+	}
+
+	go s.CleanVisitors()
+
+	// Just to be sure
+	time.Sleep(s.config.Alive + (time.Second * 1))
+	if len(s.visitors) != 0 {
+		t.Errorf("#%d rounds, len(visitors): %d\n", s.config.Reset, len(s.visitors))
 	}
 }

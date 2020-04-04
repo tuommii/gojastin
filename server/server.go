@@ -11,6 +11,10 @@ import (
 	"miikka.xyz/gojastin/config"
 )
 
+const onEarly = "Fast enough"
+const onLate = "Too slow"
+const onError = "Error"
+
 type server struct {
 	// Works as ID/IP
 	counter int
@@ -67,15 +71,17 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 	} else {
 		measure, timeLimit, err := s.stopTimer(path[1:])
 		if err != nil {
-			log.Println(err)
-			w.Write([]byte("Error"))
+			if s.config.Logging {
+				log.Println(err)
+			}
+			textResponse(w, 200, onError)
 			return
 		}
 		if measure > timeLimit {
-			w.Write([]byte(fmt.Sprintf("\tToo slow: %.4s\n\tTimelimit was: %.3s", measure, timeLimit)))
+			textResponse(w, 200, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onLate, measure, timeLimit))
 			return
 		}
-		w.Write([]byte(fmt.Sprintf("\tFast enough: %.4s\n\tTimelimit was: %s", measure, timeLimit)))
+		textResponse(w, 200, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, measure, timeLimit))
 	}
 }
 

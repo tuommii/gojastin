@@ -125,7 +125,7 @@ const html = `<!DOCTYPE html>
 	<style>
 		body { margin-top: 1rem; }
 		h1, h3, p a { font-family: -apple-system, BlinkMacSystemFont, Ubuntu, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
-		h1, h3, p a { color: #444; }
+		h1, h3, { color: #444; }
 		h1 { font-weight: 900; }
 		h1 span { font-size: 1rem; font-weight: normal; }
 		a, a:visited { color: #0366d6; }
@@ -148,7 +148,7 @@ const html = `<!DOCTYPE html>
 		<br />
 		<br />
 		<p>Created by: <a href="https://github.com/tuommii">Miikka Tuominen</a></p>
-		<p class="compiled">Server compiled: {{.BuildTime}}</p>
+		<p class="compiled"><a href="https://github.com/tuommii/gojastin">Repository</a> on Github. Server compiled: {{.BuildTime}}</p>
 	</center>
 </body>
 </html>

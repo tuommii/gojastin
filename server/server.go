@@ -53,7 +53,7 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	path := r.URL.EscapedPath()
+	path := r.URL.String()
 	switch path {
 	case "/":
 		s.startTimer()

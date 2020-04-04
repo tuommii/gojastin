@@ -49,7 +49,7 @@ func New(buildtime string) *server {
 
 func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
-		textResponse(w, http.StatusMethodNotAllowed, onError)
+		text(w, http.StatusMethodNotAllowed, onError)
 		return
 	}
 
@@ -57,11 +57,11 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 	switch path {
 	case "/":
 		s.startTimer()
-		s.serveTemplate(w)
+		s.render(w)
 		return
 	case "/favicon.ico":
 	case "_status":
-		textResponse(w, http.StatusOK, "OK")
+		text(w, http.StatusOK, "OK")
 		return
 	default:
 		measure, timeLimit, err := s.stopTimer(path[1:])
@@ -69,14 +69,14 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 			if s.config.Logging {
 				log.Println(err)
 			}
-			textResponse(w, http.StatusBadRequest, onError)
+			text(w, http.StatusBadRequest, onError)
 			return
 		}
 		if measure > timeLimit {
-			textResponse(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onLate, measure, timeLimit))
+			text(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onLate, measure, timeLimit))
 			return
 		}
-		textResponse(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, measure, timeLimit))
+		text(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, measure, timeLimit))
 	}
 }
 
@@ -96,13 +96,13 @@ func (s *server) Limit(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func textResponse(w http.ResponseWriter, code int, msg string) {
+func text(w http.ResponseWriter, code int, msg string) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(code)
 	fmt.Fprintln(w, msg)
 }
 
-func (s *server) serveTemplate(w http.ResponseWriter) {
+func (s *server) render(w http.ResponseWriter) {
 	data := struct {
 		Counter   int
 		Deadline  float64

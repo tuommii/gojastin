@@ -31,7 +31,7 @@ func (s *server) startTimer() {
 	s.counter++
 	// Prevent filling memory with unclosed timers
 	// also prevents integer overflow
-	if s.counter >= s.config.Reset {
+	if s.counter >= s.config.MaxVisitors {
 		s.counter = 0
 	}
 	s.mu.Unlock()
@@ -65,7 +65,7 @@ func (s *server) CleanVisitors() {
 	for {
 		time.Sleep(s.config.RemoveInterval)
 		for id, v := range s.visitors {
-			if time.Since(v.lastSeen) > s.config.Alive {
+			if time.Since(v.lastSeen) > s.config.VisitorAlive {
 				delete(s.visitors, id)
 				if s.config.Logging {
 					log.Println("Visitor deleted!")

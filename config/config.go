@@ -2,29 +2,16 @@ package config
 
 import "time"
 
-// Every n:th (sec) look old visitors to be deleted
-const removeInterval = time.Second * 120
-
-// older than this gets removed in background routine
-const alive = time.Second * 30
-
-// after this counter is set back to 1
-// max counter is one less
-const reset = 1000
-
-// maximux time (sec) to send second request
-const deadline = 7
-
 // Config for server
 type Config struct {
 	// (sec) older than this gets removed in background routine
-	Alive time.Duration
+	VisitorAlive time.Duration
 	// Every n look old visitors to be deleted (sec)
 	RemoveInterval time.Duration
-	// maximux time to send second request (sec)
+	// Maximux number (int) to send second request (sec)
 	Deadline int
 	// after this counter is set back to 1
-	Reset int
+	MaxVisitors int
 	// Is logging enabled, default true
 	Logging bool
 }
@@ -32,14 +19,14 @@ type Config struct {
 // New returns new config
 func New() *Config {
 	c := &Config{
-		Alive:          alive,
-		Reset:          reset,
-		Deadline:       deadline,
-		RemoveInterval: removeInterval,
+		VisitorAlive:   time.Second * 30,
+		RemoveInterval: time.Second * 120,
+		Deadline:       7,
+		MaxVisitors:    1000,
 		Logging:        true,
 	}
-	if c.RemoveInterval < alive {
-		c.RemoveInterval = alive
+	if c.RemoveInterval < c.VisitorAlive {
+		c.RemoveInterval = c.VisitorAlive
 	}
 	return c
 }

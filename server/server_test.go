@@ -7,13 +7,6 @@ import (
 	"time"
 )
 
-func TestNew(t *testing.T) {
-	s := New("test")
-	if s.build != "test" {
-		t.Errorf("Error while creating server")
-	}
-}
-
 func BenchmarkStartTimer(b *testing.B) {
 	s := New("test")
 	s.config.Logging = false
@@ -28,13 +21,13 @@ func BenchmarkStartTimer(b *testing.B) {
 func TestHomeHandle(t *testing.T) {
 	s := New("test")
 	s.config.Logging = false
-	s.config.Reset = 10
-	s.config.Alive = 2 * time.Second
+	s.config.MaxVisitors = 10
+	s.config.VisitorAlive = 2 * time.Second
 	s.config.RemoveInterval = 2 * time.Second
 	server := httptest.NewServer(s)
 	defer server.Close()
 
-	for i := 0; i < s.config.Reset*3; i++ {
+	for i := 0; i < s.config.MaxVisitors*3; i++ {
 		resp, err := http.Get(server.URL)
 		if err != nil {
 			t.Fatal(err)
@@ -43,21 +36,23 @@ func TestHomeHandle(t *testing.T) {
 			t.Fatalf("Wrong status: %d\n", resp.StatusCode)
 		}
 
-		wanted := (i + 1) % s.config.Reset
+		wanted := (i + 1) % s.config.MaxVisitors
 		if s.counter != wanted {
 			t.Errorf("#%d request, counter was %d %d\n", i+1, wanted, s.counter)
 		}
 	}
 
-	if s.config.Reset != len(s.visitors) {
-		t.Errorf("#%d rounds, len(visitors): %d\n", s.config.Reset, len(s.visitors))
+	if s.config.MaxVisitors != len(s.visitors) {
+		t.Errorf("#%d rounds, len(visitors): %d\n", s.config.MaxVisitors, len(s.visitors))
 	}
 
 	go s.CleanVisitors()
 
 	// Just to be sure
-	time.Sleep(s.config.Alive + (time.Second * 1))
+	time.Sleep(s.config.VisitorAlive + (time.Second * 1))
+
+	// Should be cleaned now
 	if len(s.visitors) != 0 {
-		t.Errorf("#%d rounds, len(visitors): %d\n", s.config.Reset, len(s.visitors))
+		t.Errorf("#%d rounds, len(visitors): %d\n", s.config.MaxVisitors, len(s.visitors))
 	}
 }

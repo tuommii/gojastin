@@ -1,4 +1,5 @@
 # gojastin
+![Build & Test Go](https://github.com/tuommii/gojastin/workflows/Build%20&%20Test%20Go/badge.svg?branch=master)
 
 Gojastin is a server measuring times between requests. Live: http://timer.miikka.xyz/
 

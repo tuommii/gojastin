@@ -21,13 +21,13 @@ Gojastin is a server measuring times between requests: http://timer.miikka.xyz/
 
 Clone:
 
-```console
+```
 git clone https://github.com/tuommii/gojastin.git
 ```
 
 Build and run:
 
-```console
+```
 make
 ```
 
@@ -36,12 +36,12 @@ Navigate to http://localhost:3030/
 
 
 Test:
-```console
+```
 make test
 ```
 
 Benchmark:
-```console
+```
 make bench
 ```
 

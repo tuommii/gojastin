@@ -1,7 +1,7 @@
 ## gojastin
 ![CI](https://github.com/tuommii/gojastin/workflows/CI/badge.svg)
 
-Gojastin is a server measuring times between requests: http://timer.miikka.xyz/
+Gojastin is a server measuring times between requests: https://timer.miikka.xyz/
 
 
 ![Screenshot](/pic.png)

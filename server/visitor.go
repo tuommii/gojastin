@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// visitor holds data for each request (visitor)
+// visitor holds data for each request
 type visitor struct {
 	// limiter  *rate.Limiter
 	lastSeen time.Time
@@ -37,7 +37,7 @@ func (s *server) startTimer() {
 	s.mu.Unlock()
 	s.visitors[s.counter] = newVisitor(s.config.Deadline)
 	if s.config.Logging {
-		log.Printf("ID: [%d], COUNT: [%d]\n", s.counter, len(s.visitors))
+		log.Printf("id: [%d], count: [%d]\n", s.counter, len(s.visitors))
 	}
 }
 
@@ -46,14 +46,14 @@ func (s *server) stopTimer(query string) (time.Duration, time.Duration, error) {
 	now := time.Now()
 	id, err := strconv.Atoi(query)
 	if err != nil {
-		return 0, 0, errors.New("Parsing error: " + query)
+		return 0, 0, errors.New("parsing error: " + query)
 	}
 	if _, ok := s.visitors[id]; !ok {
-		return 0, 0, errors.New("[Key] error")
+		return 0, 0, errors.New("vistor doesn't exist")
 	}
 	delta := now.Sub(s.visitors[id].lastSeen)
 	if s.config.Logging {
-		log.Println("Time:", delta)
+		log.Println("time:", delta)
 	}
 	timeLimit := s.visitors[id].deadline
 	delete(s.visitors, id)
@@ -68,7 +68,7 @@ func (s *server) CleanVisitors() {
 			if time.Since(v.lastSeen) > s.config.VisitorAlive {
 				delete(s.visitors, id)
 				if s.config.Logging {
-					log.Println("Visitor deleted!")
+					log.Println("visitor deleted!")
 				}
 			}
 		}

@@ -61,7 +61,7 @@ func TestTimerStop(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusBadRequest {
 		t.Fatalf("Wrong status: %d\n", resp.StatusCode)
 	}
 	body, err = ioutil.ReadAll(resp.Body)
@@ -78,7 +78,7 @@ func TestTimerStop(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusBadRequest {
 		t.Fatalf("Wrong status: %d\n", resp.StatusCode)
 	}
 	body, err = ioutil.ReadAll(resp.Body)

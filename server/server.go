@@ -60,7 +60,7 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 		s.render(w)
 		return
 	case "/favicon.ico":
-	case "_status":
+	case "/_status":
 		text(w, http.StatusOK, "OK")
 		return
 	default:

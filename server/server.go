@@ -32,11 +32,6 @@ type server struct {
 	config  *config.Config
 }
 
-// Implement http.Handler interface, for httptest purposes
-func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	s.Router(w, r)
-}
-
 // New return's new server
 func New(buildtime string) *server {
 	s := &server{build: buildtime}
@@ -50,10 +45,6 @@ func New(buildtime string) *server {
 	}
 	s.templ = templ
 	return s
-}
-
-func (s *server) SetRateLimit(r rate.Limit, b int) {
-	s.limiter = rate.NewLimiter(r, b)
 }
 
 func (s *server) Router(w http.ResponseWriter, r *http.Request) {
@@ -70,7 +61,7 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 		return
 	case "/favicon.ico":
 	case "_status":
-		textResponse(w, 200, "OK")
+		textResponse(w, http.StatusOK, "OK")
 		return
 	default:
 		measure, timeLimit, err := s.stopTimer(path[1:])
@@ -78,15 +69,20 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 			if s.config.Logging {
 				log.Println(err)
 			}
-			textResponse(w, 200, onError)
+			textResponse(w, http.StatusBadRequest, onError)
 			return
 		}
 		if measure > timeLimit {
-			textResponse(w, 200, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onLate, measure, timeLimit))
+			textResponse(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onLate, measure, timeLimit))
 			return
 		}
-		textResponse(w, 200, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, measure, timeLimit))
+		textResponse(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, measure, timeLimit))
 	}
+}
+
+// Implement http.Handler interface, for httptest purposes
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.Router(w, r)
 }
 
 // Global limiter

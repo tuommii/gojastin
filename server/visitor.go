@@ -49,7 +49,7 @@ func (s *server) stopTimer(query string) (time.Duration, time.Duration, error) {
 		return 0, 0, errors.New("parsing error: " + query)
 	}
 	if _, ok := s.visitors[id]; !ok {
-		return 0, 0, errors.New("vistor doesn't exist")
+		return 0, 0, errors.New("visitor doesn't exist")
 	}
 	delta := now.Sub(s.visitors[id].lastSeen)
 	if s.config.Logging {

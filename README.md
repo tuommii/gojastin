@@ -46,13 +46,14 @@ make bench
 ```
 
 ## Todo
-- [x] Basic styles
 - [ ] Visitor based rate limiting
-- [ ] [sync.Pool](https://developer20.com/using-sync-pool/index.html)
+- [ ] Test config for bad values
 - [ ] Template for "result" and templates to file
+- [ ] [sync.Pool](https://developer20.com/using-sync-pool/index.html)
+(Might be premature optimization)
+- [x] Basic styles
 - [x] Testing
 - [x] Test counter reset
 - [x] Test visitors get removed
-- [ ] Test config for bad values
 - [x] Test timerStop()
 - [x] Easier way to change times

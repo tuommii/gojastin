@@ -14,6 +14,7 @@ Gojastin is a server measuring times between requests. Live: http://timer.miikka
 
 ### Run
 `make`
+
 Navigate to http://localhost:3030/
 
 ### Test

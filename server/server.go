@@ -11,9 +11,12 @@ import (
 	"miikka.xyz/gojastin/config"
 )
 
-const onEarly = "Fast enough"
-const onLate = "Too slow"
-const onError = "Error"
+// Responses for different cases
+const (
+	onEarly = "Fast enough"
+	onLate  = "Too slow"
+	onError = "Error"
+)
 
 type server struct {
 	// Works as ID/IP
@@ -55,20 +58,21 @@ func (s *server) SetRateLimit(r rate.Limit, b int) {
 
 func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
-		w.Write([]byte("Error"))
+		textResponse(w, http.StatusMethodNotAllowed, onError)
 		return
 	}
-	path := r.URL.EscapedPath()
 
-	if path == "/" {
+	path := r.URL.EscapedPath()
+	switch path {
+	case "/":
 		s.startTimer()
 		s.serveTemplate(w)
-	} else if path == "/_status" {
-		// status check
+		return
+	case "/favicon.ico":
+	case "_status":
 		textResponse(w, 200, "OK")
-	} else if path == "/favicon.ico" {
-		// Dont count favicon
-	} else {
+		return
+	default:
 		measure, timeLimit, err := s.stopTimer(path[1:])
 		if err != nil {
 			if s.config.Logging {
@@ -96,6 +100,12 @@ func (s *server) Limit(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+func textResponse(w http.ResponseWriter, code int, msg string) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(code)
+	fmt.Fprintln(w, msg)
+}
+
 func (s *server) serveTemplate(w http.ResponseWriter) {
 	data := struct {
 		Counter   int
@@ -107,12 +117,6 @@ func (s *server) serveTemplate(w http.ResponseWriter) {
 		s.build,
 	}
 	s.templ.Execute(w, data)
-}
-
-func textResponse(w http.ResponseWriter, code int, msg string) {
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	w.WriteHeader(code)
-	fmt.Fprintln(w, msg)
 }
 
 // For sake of simplicity. Force reload on back-button

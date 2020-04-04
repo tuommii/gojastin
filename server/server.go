@@ -50,10 +50,18 @@ func (s *server) SetRateLimit(r rate.Limit, b int) {
 }
 
 func (s *server) Router(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		w.Write([]byte("Error"))
+		return
+	}
 	path := r.URL.EscapedPath()
+
 	if path == "/" {
 		s.startTimer()
 		s.serveTemplate(w)
+	} else if path == "/_status" {
+		// status check
+		textResponse(w, 200, "OK")
 	} else if path == "/favicon.ico" {
 		// Dont count favicon
 	} else {
@@ -93,6 +101,12 @@ func (s *server) serveTemplate(w http.ResponseWriter) {
 		s.build,
 	}
 	s.templ.Execute(w, data)
+}
+
+func textResponse(w http.ResponseWriter, code int, msg string) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(code)
+	fmt.Fprintln(w, msg)
 }
 
 // For sake of simplicity. Force reload on back-button

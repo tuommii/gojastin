@@ -10,20 +10,31 @@ Gojastin is a server measuring times between requests. Live: http://timer.miikka
 >  Challenge where i got inspiration for this project was fun but server side seemed far more interesting, so I decided try to do my own. Proof of Concept. WIP. Link to [challenge](https://github.com/hivehelsinki/remote-challs/tree/master/chall03)
 
 
-## Try locally
+## Running it on local
 
-### Run
-`make`
+Clone:
+
+```console
+git clone https://github.com/tuommii/gojastin.git
+```
+
+Build and run:
+
+```console
+make
+```
 
 Navigate to http://localhost:3030/
 
-### Test
-`make test`
+Test:
+```console
+make test
+```
 
-### Benchmark
-```make bench```
-
----
+Benchmark:
+```console
+make bench
+```
 
 ## Todo
 - [x] Basic styles

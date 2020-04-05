@@ -30,14 +30,20 @@ type server struct {
 	mu      sync.Mutex
 	limiter *rate.Limiter
 	config  *config.Config
+	pool    *sync.Pool
 }
 
 // New return's new server
 func New(buildtime string) *server {
 	s := &server{build: buildtime}
-	c := config.New()
-	s.config = c
-	s.visitors = make(map[int]*visitor)
+	s.pool = &sync.Pool{
+		New: func() interface{} {
+			m := make(map[int]*visitor)
+			return m
+		},
+	}
+	s.visitors = s.pool.Get().(map[int]*visitor)
+	s.config = config.New()
 	s.limiter = rate.NewLimiter(1, 100)
 	templ, err := template.New("home").Parse(html)
 	if err != nil {

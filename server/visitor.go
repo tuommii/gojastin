@@ -10,6 +10,7 @@ import (
 
 // visitor holds data for each request
 type visitor struct {
+	id int
 	// limiter  *rate.Limiter
 	lastSeen time.Time
 	// time to send second request
@@ -36,6 +37,7 @@ func (s *server) startTimer() {
 	}
 	s.mu.Unlock()
 	s.visitors[s.counter] = newVisitor(s.config.Deadline)
+	s.pool.Put(s.visitors)
 	if s.config.Logging {
 		log.Printf("id: [%d], count: [%d]\n", s.counter, len(s.visitors))
 	}
@@ -51,12 +53,15 @@ func (s *server) stopTimer(query string) (time.Duration, time.Duration, error) {
 	if _, ok := s.visitors[id]; !ok {
 		return 0, 0, errors.New("visitor doesn't exist")
 	}
+
+	// m := s.pool.Get().(map[int]*visitor)
 	delta := now.Sub(s.visitors[id].lastSeen)
 	if s.config.Logging {
 		log.Println("time:", delta)
 	}
 	timeLimit := s.visitors[id].deadline
 	delete(s.visitors, id)
+	s.pool.Put(s.visitors)
 	return delta, timeLimit, nil
 }
 
@@ -72,5 +77,6 @@ func (s *server) CleanVisitors() {
 				}
 			}
 		}
+		s.pool.Put(s.visitors)
 	}
 }

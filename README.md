@@ -32,16 +32,6 @@ Clone:
 git clone https://github.com/tuommii/gojastin.git
 ```
 
-Build and run:
-
-```
-make
-```
-
-
-Navigate to http://localhost:3030/
-
-
 Test:
 ```
 make test
@@ -51,6 +41,16 @@ Benchmark:
 ```
 make bench
 ```
+
+Build and run:
+
+```
+make
+```
+
+
+Navigate to http://localhost:3030/
+
 
 
 ## Todo

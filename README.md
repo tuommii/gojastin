@@ -49,7 +49,7 @@ make bench
 - [ ] Visitor based rate limiting
 - [ ] Test config for bad values
 - [ ] Template for "result" and templates to file
-- [ ] [sync.Pool](https://developer20.com/using-sync-pool/index.html)
+- [x] [sync.Pool](https://developer20.com/using-sync-pool/index.html)
 (Might be premature optimization)
 - [x] Basic styles
 - [x] Testing

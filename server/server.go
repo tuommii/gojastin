@@ -104,8 +104,9 @@ func computeResponse(total time.Duration, v *visitor) (int, string) {
 	}
 	if total > v.deadline {
 		msg = fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onLate, total, v.deadline)
+	} else {
+		msg = fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, total, v.deadline)
 	}
-	msg = fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, total, v.deadline)
 	return status, msg
 }
 

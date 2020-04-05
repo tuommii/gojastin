@@ -2,6 +2,7 @@ package server
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -36,9 +37,15 @@ func (s *server) startTimer() {
 		s.counter = 0
 	}
 	s.mu.Unlock()
-	s.visitors[s.counter] = newVisitor(s.config.Deadline)
-	s.pool.Put(s.visitors)
+	// s.visitors[s.counter] = newVisitor(s.config.Deadline)
+	v := s.pool.Get().(map[int]*visitor)
 	if s.config.Logging {
+		fmt.Printf("before: %+v\n", v)
+	}
+	v[s.counter] = newVisitor(s.config.Deadline)
+	s.pool.Put(v)
+	if s.config.Logging {
+		fmt.Printf("after: %+v\n", v)
 		log.Printf("id: [%d], count: [%d]\n", s.counter, len(s.visitors))
 	}
 }
@@ -50,18 +57,19 @@ func (s *server) stopTimer(query string) (time.Duration, time.Duration, error) {
 	if err != nil {
 		return 0, 0, errors.New("parsing error: " + query)
 	}
-	if _, ok := s.visitors[id]; !ok {
+
+	v := s.pool.Get().(map[int]*visitor)
+	if _, ok := v[id]; !ok {
 		return 0, 0, errors.New("visitor doesn't exist")
 	}
 
-	// m := s.pool.Get().(map[int]*visitor)
-	delta := now.Sub(s.visitors[id].lastSeen)
+	delta := now.Sub(v[id].lastSeen)
 	if s.config.Logging {
 		log.Println("time:", delta)
 	}
-	timeLimit := s.visitors[id].deadline
-	delete(s.visitors, id)
-	s.pool.Put(s.visitors)
+	timeLimit := v[id].deadline
+	delete(v, id)
+	s.pool.Put(v)
 	return delta, timeLimit, nil
 }
 
@@ -69,14 +77,15 @@ func (s *server) stopTimer(query string) (time.Duration, time.Duration, error) {
 func (s *server) CleanVisitors() {
 	for {
 		time.Sleep(s.config.RemoveInterval)
-		for id, v := range s.visitors {
+		vis := s.pool.Get().(map[int]*visitor)
+		for id, v := range vis {
 			if time.Since(v.lastSeen) > s.config.VisitorAlive {
-				delete(s.visitors, id)
+				delete(vis, id)
 				if s.config.Logging {
 					log.Println("visitor deleted!")
 				}
 			}
 		}
-		s.pool.Put(s.visitors)
+		s.pool.Put(vis)
 	}
 }

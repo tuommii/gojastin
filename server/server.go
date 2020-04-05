@@ -36,13 +36,14 @@ type server struct {
 // New return's new server
 func New(buildtime string) *server {
 	s := &server{build: buildtime}
+	s.visitors = make(map[int]*visitor)
 	s.pool = &sync.Pool{
 		New: func() interface{} {
-			m := make(map[int]*visitor)
-			return m
+			return s.visitors
 		},
 	}
-	s.visitors = s.pool.Get().(map[int]*visitor)
+	// s.pool.Put(vis)
+	// s.visitors = s.pool.Get().(map[int]*visitor)
 	s.config = config.New()
 	s.limiter = rate.NewLimiter(1, 100)
 	templ, err := template.New("home").Parse(html)
@@ -109,13 +110,14 @@ func text(w http.ResponseWriter, code int, msg string) {
 }
 
 func (s *server) render(w http.ResponseWriter) {
+	v := s.pool.Get().(map[int]*visitor)
 	data := struct {
 		Counter   int
 		Deadline  float64
 		BuildTime string
 	}{
 		s.counter,
-		s.visitors[s.counter].deadline.Seconds(),
+		v[s.counter].deadline.Seconds(),
 		s.build,
 	}
 	s.templ.Execute(w, data)

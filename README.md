@@ -45,48 +45,13 @@ Benchmark:
 make bench
 ```
 
+| Function | Iterations | ns/op | B/op | allocs/op |
+|---|---|---|---|---|
+| [startTimer](https://github.com/tuommii/gojastin/blob/f9cdfa646ed7693d3210a17291abb2a0efd84886/server/visitor.go#L29)| 15951188 | 75.0 | 0 | 0|
 
-Without
-
-?   	miikka.xyz/gojastin/cmd/gojastin	[no test files]
-?   	miikka.xyz/gojastin/config	[no test files]
-goos: linux
-goarch: amd64
-pkg: miikka.xyz/gojastin/server
-BenchmarkStart
-BenchmarkStart-4                 	 5351934	       218 ns/op	      48 B/op	       1 allocs/op
-BenchmarkStartAndStop
-BenchmarkStartAndStop-4          	 2285290	       522 ns/op	     148 B/op	       4 allocs/op
-BenchmarkStartAndHalfStopped
-BenchmarkStartAndHalfStopped-4   	 3116977	       381 ns/op	      98 B/op	       3 allocs/op
-PASS
-ok  	miikka.xyz/gojastin/server	4.706s
-
-
-With
-go test -v -run=XXX -bench . ./... -benchmem
-?   	miikka.xyz/gojastin/cmd/gojastin	[no test files]
-?   	miikka.xyz/gojastin/config	[no test files]
-goos: linux
-goarch: amd64
-pkg: miikka.xyz/gojastin/server
-BenchmarkAllocWithoutPool
-BenchmarkAllocWithoutPool-4      	 1792692	       594 ns/op	     143 B/op	       1 allocs/op
-BenchmarkAllocWithPool
-BenchmarkAllocWithPool-4         	 3741678	       347 ns/op	      91 B/op	       0 allocs/op
-
-
-
-BenchmarkStart
-BenchmarkStart-4                 	16693008	        72.0 ns/op	       0 B/op	       0 allocs/op
-BenchmarkStartAndStop
-BenchmarkStartAndStop-4          	 4631438	       256 ns/op	      52 B/op	       2 allocs/op
-BenchmarkStartAndHalfStopped
-BenchmarkStartAndHalfStopped-4   	 7048154	       185 ns/op	      26 B/op	       1 allocs/op
-PASS
-ok  	miikka.xyz/gojastin/server	7.717s
-
-
+| Function | Iterations | ns/op | B/op | allocs/op |
+|---|---|---|---|---|
+| [startTimer](https://github.com/tuommii/gojastin/blob/f9cdfa646ed7693d3210a17291abb2a0efd84886/server/visitor.go#L29)| 5351934 | 218 | 48 | 1 |
 
 
 ## Todo

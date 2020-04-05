@@ -3,7 +3,7 @@
 
 Gojastin is a server measuring times between requests: https://timer.miikka.xyz/
 
->  Challenge where i got inspiration for this project was fun, but validation for solutions seemed far more interesting, so I decided try to do my own *Proof of Concept*. You can read challenge subject [here](https://github.com/hivehelsinki/remote-challs/tree/master/chall03). WIP. 
+>  Challenge where i got inspiration for this project was fun, but validation for solutions seemed far more interesting. So I decided try to do my own *Proof of Concept*. You can read challenge subject [here](https://github.com/hivehelsinki/remote-challs/tree/master/chall03). WIP. 
 
 ## Features
 - [x] Live demo

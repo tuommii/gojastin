@@ -3,9 +3,11 @@ package server
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"sync"
 	"text/template"
+	"time"
 
 	"golang.org/x/time/rate"
 	"miikka.xyz/gojastin/config"
@@ -39,7 +41,8 @@ func New(buildtime string) *server {
 	s.visitors = make(map[int]*visitor)
 	s.pool = &sync.Pool{
 		New: func() interface{} {
-			return s.visitors
+			v := visitor{lastSeen: time.Now(), deadline: (time.Duration(rand.Intn(s.config.Deadline) + 1)) * time.Second}
+			return &v
 		},
 	}
 	// s.pool.Put(vis)
@@ -71,19 +74,17 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 		text(w, http.StatusOK, "OK")
 		return
 	default:
-		measure, timeLimit, err := s.stopTimer(path[1:])
-		if err != nil {
-			if s.config.Logging {
-				log.Println(err)
-			}
+		measure, visitor := s.stopTimer(path[1:])
+		if visitor == nil {
 			text(w, http.StatusBadRequest, onError)
 			return
 		}
-		if measure > timeLimit {
-			text(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onLate, measure, timeLimit))
+		if measure > visitor.deadline {
+			text(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onLate, measure, visitor.deadline))
 			return
 		}
-		text(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, measure, timeLimit))
+		delete(s.visitors, visitor.body)
+		text(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, measure, visitor.deadline))
 	}
 }
 
@@ -110,14 +111,15 @@ func text(w http.ResponseWriter, code int, msg string) {
 }
 
 func (s *server) render(w http.ResponseWriter) {
-	v := s.pool.Get().(map[int]*visitor)
+	// v := s.pool.Get().(*visitor)
 	data := struct {
 		Counter   int
 		Deadline  float64
 		BuildTime string
 	}{
 		s.counter,
-		v[s.counter].deadline.Seconds(),
+		s.pool.Get().(*visitor).deadline.Seconds(),
+		// s.visitors[s.counter].deadline.Seconds(),
 		s.build,
 	}
 	s.templ.Execute(w, data)

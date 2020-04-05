@@ -2,6 +2,7 @@ package server
 
 import (
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -10,12 +11,50 @@ import (
 	"time"
 )
 
-func BenchmarkTimers(b *testing.B) {
+func BenchmarkAllocWithoutPool(b *testing.B) {
+	s := New("test")
+	s.config.Logging = false
+	for n := 0; n < b.N; n++ {
+		v := &visitor{deadline: (time.Duration(rand.Intn(s.config.Deadline) + 1)) * time.Second, lastSeen: time.Now()}
+		v.body++
+		s.visitors[n] = v
+	}
+}
+func BenchmarkAllocWithPool(b *testing.B) {
+	s := New("test")
+	s.config.Logging = false
+	for n := 0; n < b.N; n++ {
+		v := s.pool.Get().(*visitor)
+		v.body++
+		s.pool.Put(v)
+		s.visitors[n] = v
+	}
+}
+
+func BenchmarkStart(b *testing.B) {
 	s := New("test")
 	s.config.Logging = false
 	for n := 0; n < b.N; n++ {
 		s.startTimer()
-		s.stopTimer(string(n + 1))
+	}
+}
+func BenchmarkStartAndStop(b *testing.B) {
+	s := New("test")
+	s.config.Logging = false
+	for n := 0; n < b.N; n++ {
+		s.startTimer()
+		s.stopTimer(string(n))
+	}
+}
+
+func BenchmarkStartAndHalfStopped(b *testing.B) {
+	s := New("test")
+	s.config.Logging = false
+	for n := 0; n < b.N; n++ {
+		s.startTimer()
+		if n%2 == 0 {
+			s.stopTimer(string(n))
+		}
 	}
 }
 

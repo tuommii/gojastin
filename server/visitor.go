@@ -39,10 +39,6 @@ func (s *server) startTimer() {
 	v.body = s.counter
 	s.pool.Put(v)
 	s.visitors[s.counter] = v
-	// s.visitors[s.counter] = newVisitor(s.config.Deadline)
-	// v := s.pool.Get().(map[int]*visitor)
-	// v[s.counter] = newVisitor(s.config.Deadline)
-	// s.pool.Put(v)
 }
 
 // stopTimer is called when second request is received
@@ -53,7 +49,6 @@ func (s *server) stopTimer(query string) (time.Duration, *visitor) {
 		return 0, nil
 	}
 	if _, ok := s.visitors[id]; !ok {
-		fmt.Println(id, "not found")
 		return 0, nil
 	}
 	delta := now.Sub(s.visitors[id].lastSeen)

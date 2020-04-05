@@ -1,12 +1,10 @@
 package server
 
 import (
-	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
-	"strings"
 	"testing"
 	"time"
 )
@@ -87,13 +85,6 @@ func TestTimerStop(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("Wrong status: %d\n", resp.StatusCode)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if strings.HasPrefix(string(body), onEarly) == false {
-		t.Errorf("Wrong response")
-	}
 
 	// Check with same id again, shoud be deleted already
 	resp, err = http.Get(server.URL + "/" + strconv.Itoa(s.counter))
@@ -104,13 +95,6 @@ func TestTimerStop(t *testing.T) {
 	if resp.StatusCode != http.StatusBadRequest {
 		t.Fatalf("Wrong status: %d\n", resp.StatusCode)
 	}
-	body, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if strings.HasPrefix(string(body), onError) == false {
-		t.Errorf("Wrong response")
-	}
 
 	// Check with ID that aint created yet
 	resp, err = http.Get(server.URL + "/" + strconv.Itoa(s.counter+1))
@@ -120,13 +104,6 @@ func TestTimerStop(t *testing.T) {
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusBadRequest {
 		t.Fatalf("Wrong status: %d\n", resp.StatusCode)
-	}
-	body, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if strings.HasPrefix(string(body), onError) == false {
-		t.Errorf("Wrong response")
 	}
 }
 

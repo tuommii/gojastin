@@ -18,7 +18,7 @@ type visitor struct {
 }
 
 // startTimer is called when first request is received
-func (s *server) startTimer() {
+func (s *Server) startTimer() {
 	s.mu.Lock()
 	s.counter++
 
@@ -37,7 +37,7 @@ func (s *server) startTimer() {
 }
 
 // stopTimer is called when second request is received
-func (s *server) stopTimer(query string) (time.Duration, *visitor) {
+func (s *Server) stopTimer(query string) (time.Duration, *visitor) {
 	now := time.Now()
 	id, err := parseQuery(query)
 	if err != nil {
@@ -62,7 +62,7 @@ func parseQuery(query string) (int, error) {
 }
 
 // CleanVisitors cleans memory
-func (s *server) CleanVisitors() {
+func (s *Server) CleanVisitors() {
 	for {
 		time.Sleep(s.config.RemoveInterval)
 		for id, v := range s.visitors {

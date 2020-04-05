@@ -12,14 +12,8 @@ import (
 	"miikka.xyz/gojastin/config"
 )
 
-// Responses for different cases
-const (
-	onEarly = "Fast enough"
-	onLate  = "Too slow"
-	onError = "Error"
-)
-
-type server struct {
+// Server ...
+type Server struct {
 	// Works as ID
 	counter int
 	// All requests gets unique key defined by counter
@@ -34,8 +28,8 @@ type server struct {
 }
 
 // New returns a new server
-func New(buildtime string) *server {
-	s := &server{build: buildtime}
+func New(buildtime string) *Server {
+	s := &Server{build: buildtime}
 
 	s.visitors = make(map[int]*visitor)
 
@@ -57,9 +51,9 @@ func New(buildtime string) *server {
 }
 
 // Router handles all routes
-func (s *server) Router(w http.ResponseWriter, r *http.Request) {
+func (s *Server) Router(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
-		text(w, http.StatusMethodNotAllowed, onError)
+		text(w, http.StatusMethodNotAllowed, "Error")
 		return
 	}
 
@@ -86,7 +80,7 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 }
 
 // Implement http.Handler interface, for httptest purposes
-func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.Router(w, r)
 }
 
@@ -99,13 +93,13 @@ func computeResponse(total time.Duration, v *visitor) (int, string) {
 	// This must be checked first
 	if v == nil {
 		status = http.StatusBadRequest
-		msg = onError
+		msg = "Error"
 		return status, msg
 	}
 	if total > v.deadline {
-		msg = fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onLate, total, v.deadline)
+		msg = fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", "Too slow", total, v.deadline)
 	} else {
-		msg = fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, total, v.deadline)
+		msg = fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", "Fast enough", total, v.deadline)
 	}
 	return status, msg
 }
@@ -116,7 +110,7 @@ func text(w http.ResponseWriter, code int, msg string) {
 	fmt.Fprintln(w, msg)
 }
 
-func (s *server) render(w http.ResponseWriter) {
+func (s *Server) render(w http.ResponseWriter) {
 	// v := s.pool.Get().(*visitor)
 	data := struct {
 		Counter   int

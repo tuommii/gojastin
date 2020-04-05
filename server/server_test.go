@@ -15,6 +15,7 @@ func BenchmarkStartTimer(b *testing.B) {
 	s.config.Logging = false
 	for n := 0; n < b.N; n++ {
 		s.startTimer()
+		s.stopTimer(string(n + 1))
 	}
 }
 

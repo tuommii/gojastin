@@ -5,8 +5,6 @@ Gojastin is a server measuring times between requests: https://timer.miikka.xyz/
 
 >  Challenge where i got inspiration for this project was fun, but validation for solutions seemed far more interesting, so I decided try to do my own *Proof of Concept*. You can read challenge subject [here](https://github.com/hivehelsinki/remote-challs/tree/master/chall03). WIP. 
 
-![Screenshot](/pic.png)
-
 ## Features
 - [x] Live demo
 - [x] Uses [sync.Pool](https://golang.org/src/sync/pool.go) (More on that below)
@@ -65,3 +63,7 @@ make bench
 - [x] Test visitors get removed
 - [x] Test timerStop()
 - [x] Easier way to change times
+
+## Screenshot
+
+![Screenshot](/pic.png)

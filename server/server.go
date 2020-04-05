@@ -9,7 +9,6 @@ import (
 	"text/template"
 	"time"
 
-	"golang.org/x/time/rate"
 	"miikka.xyz/gojastin/config"
 )
 
@@ -21,34 +20,34 @@ const (
 )
 
 type server struct {
-	// Works as ID/IP
+	// Works as ID
 	counter int
 	// All requests gets unique key defined by counter
 	visitors map[int]*visitor
 	// Compilation timestamp gets injected here
 	build string
 
-	templ   *template.Template
-	mu      sync.Mutex
-	limiter *rate.Limiter
-	config  *config.Config
-	pool    *sync.Pool
+	templ  *template.Template
+	mu     sync.Mutex
+	config *config.Config
+	pool   *sync.Pool
 }
 
-// New return's new server
+// New returns a new server
 func New(buildtime string) *server {
 	s := &server{build: buildtime}
+
 	s.visitors = make(map[int]*visitor)
+
+	// We use this, when creating new visitor
 	s.pool = &sync.Pool{
 		New: func() interface{} {
 			v := visitor{lastSeen: time.Now(), deadline: (time.Duration(rand.Intn(s.config.Deadline) + 1)) * time.Second}
 			return &v
 		},
 	}
-	// s.pool.Put(vis)
-	// s.visitors = s.pool.Get().(map[int]*visitor)
+
 	s.config = config.New()
-	s.limiter = rate.NewLimiter(1, 100)
 	templ, err := template.New("home").Parse(html)
 	if err != nil {
 		log.Fatal(err)
@@ -57,6 +56,7 @@ func New(buildtime string) *server {
 	return s
 }
 
+// Router handles all routes
 func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		text(w, http.StatusMethodNotAllowed, onError)
@@ -74,17 +74,14 @@ func (s *server) Router(w http.ResponseWriter, r *http.Request) {
 		text(w, http.StatusOK, "OK")
 		return
 	default:
-		measure, visitor := s.stopTimer(path[1:])
-		if visitor == nil {
-			text(w, http.StatusBadRequest, onError)
+		total, visitor := s.stopTimer(path[1:])
+		status, msg := computeResponse(total, visitor)
+		if status == http.StatusBadRequest {
+			text(w, status, msg)
 			return
 		}
-		if measure > visitor.deadline {
-			text(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onLate, measure, visitor.deadline))
-			return
-		}
-		delete(s.visitors, visitor.body)
-		text(w, http.StatusOK, fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, measure, visitor.deadline))
+		delete(s.visitors, visitor.id)
+		text(w, status, msg)
 	}
 }
 
@@ -93,15 +90,23 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.Router(w, r)
 }
 
-// Global limiter
-func (s *server) Limit(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if s.limiter.Allow() == false {
-			http.Error(w, http.StatusText(429), http.StatusTooManyRequests)
-			return
-		}
-		next.ServeHTTP(w, r)
+// Helper funcs
+
+func computeResponse(total time.Duration, v *visitor) (int, string) {
+	status := http.StatusOK
+	var msg string
+
+	// This must be checked first
+	if v == nil {
+		status = http.StatusBadRequest
+		msg = onError
+		return status, msg
 	}
+	if total > v.deadline {
+		msg = fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onLate, total, v.deadline)
+	}
+	msg = fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", onEarly, total, v.deadline)
+	return status, msg
 }
 
 func text(w http.ResponseWriter, code int, msg string) {

@@ -17,7 +17,7 @@ Gojastin is a server measuring times between requests: https://timer.miikka.xyz/
 ## Bechmarks
 | Function | Iterations | ns/op | B/op | allocs/op |
 |---|--:|--:|--:|--:|
-|[without sync.Loop](https://github.com/tuommii/gojastin/blob/02dbae4ad50f6fe8d68dd62a585b9e58bbc69760/server/visitor.go#L29)| 5351934 | 218 | 48 | 1 |
+|[without sync.Loop](https://github.com/tuommii/gojastin/blob/21ad33431767dfb9b4c9a6d8b9f63c9f720f66e2/server/visitor.go#L29)| 5351934 | 218 | 48 | 1 |
 |[with sync.Loop](https://github.com/tuommii/gojastin/blob/f9cdfa646ed7693d3210a17291abb2a0efd84886/server/visitor.go#L29)|  15951188 | 75 | 0 | 0|
 
 

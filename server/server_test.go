@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func BenchmarkStartTimer(b *testing.B) {
+func BenchmarkTimers(b *testing.B) {
 	s := New("test")
 	s.config.Logging = false
 	for n := 0; n < b.N; n++ {

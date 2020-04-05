@@ -16,8 +16,7 @@ test:
 
 # Runs without other tests
 bench:
-	go test -run=XXX -bench . ./...
-
+	go test -v -run=XXX -bench . ./... -benchmem
 
 deploy: build
 	ssh -t $(DIOC_USER)@$(DIOC_IP) "sudo service chall03 stop"

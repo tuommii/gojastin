@@ -40,9 +40,8 @@ func (s *server) startTimer() {
 func (s *server) stopTimer(query string) (time.Duration, *visitor) {
 	now := time.Now()
 	id, err := parseQuery(query)
-
 	if err != nil {
-		log.Println(err)
+		log.Println("VITTU", err)
 		return 0, nil
 	}
 	if _, exist := s.visitors[id]; !exist {

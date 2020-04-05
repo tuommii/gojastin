@@ -16,7 +16,7 @@ func BenchmarkAllocWithoutPool(b *testing.B) {
 	s.config.Logging = false
 	for n := 0; n < b.N; n++ {
 		v := &visitor{deadline: (time.Duration(rand.Intn(s.config.Deadline) + 1)) * time.Second, lastSeen: time.Now()}
-		v.body++
+		v.id++
 		s.visitors[n] = v
 	}
 }
@@ -25,7 +25,7 @@ func BenchmarkAllocWithPool(b *testing.B) {
 	s.config.Logging = false
 	for n := 0; n < b.N; n++ {
 		v := s.pool.Get().(*visitor)
-		v.body++
+		v.id++
 		s.pool.Put(v)
 		s.visitors[n] = v
 	}
@@ -43,7 +43,7 @@ func BenchmarkStartAndStop(b *testing.B) {
 	s.config.Logging = false
 	for n := 0; n < b.N; n++ {
 		s.startTimer()
-		s.stopTimer(string(n))
+		s.stopTimer(strconv.Itoa(n))
 	}
 }
 
@@ -53,7 +53,7 @@ func BenchmarkStartAndHalfStopped(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		s.startTimer()
 		if n%2 == 0 {
-			s.stopTimer(string(n))
+			s.stopTimer(strconv.Itoa(n))
 		}
 	}
 }

@@ -22,7 +22,7 @@ Gojastin is a server measuring times between requests: https://timer.miikka.xyz/
 
 
 
-More benchmarks by
+More testes by
 
 ## Running it on local
 

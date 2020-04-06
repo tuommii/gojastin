@@ -41,7 +41,6 @@ func (s *Server) stopTimer(query string) (time.Duration, *visitor) {
 	now := time.Now()
 	id, err := parseQuery(query)
 	if err != nil {
-		log.Println("VITTU", err)
 		return 0, nil
 	}
 	if _, exist := s.visitors[id]; !exist {
@@ -69,7 +68,7 @@ func (s *Server) CleanVisitors() {
 			if time.Since(v.lastSeen) > s.config.VisitorAlive {
 				delete(s.visitors, id)
 				if s.config.Logging {
-					log.Println("visitor deleted!")
+					log.Println("visitor deleted!", id)
 				}
 			}
 		}

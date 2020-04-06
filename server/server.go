@@ -21,10 +21,10 @@ type Server struct {
 	// Compilation timestamp gets injected here
 	build string
 
-	templ  *template.Template
-	mu     sync.Mutex
-	config *config.Config
 	pool   *sync.Pool
+	mu     sync.Mutex
+	templ  *template.Template
+	config *config.Config
 }
 
 // New returns a new server
@@ -36,7 +36,9 @@ func New(buildtime string) *Server {
 	// We use this, when creating new visitor
 	s.pool = &sync.Pool{
 		New: func() interface{} {
-			v := visitor{lastSeen: time.Now(), deadline: (time.Duration(rand.Intn(s.config.Deadline) + 1)) * time.Second}
+			seed := rand.Intn(s.config.Deadline) + 1
+			deadline := time.Duration(seed) * time.Second
+			v := visitor{lastSeen: time.Now(), deadline: deadline}
 			return &v
 		},
 	}
@@ -68,8 +70,8 @@ func (s *Server) Router(w http.ResponseWriter, r *http.Request) {
 		text(w, http.StatusOK, "OK")
 		return
 	default:
-		total, visitor := s.stopTimer(path[1:])
-		status, msg := computeResponse(total, visitor)
+		timeSpent, visitor := s.stopTimer(path[1:])
+		status, msg := computeResponse(timeSpent, visitor)
 		if status == http.StatusBadRequest {
 			text(w, status, msg)
 			return
@@ -86,7 +88,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Helper funcs
 
-func computeResponse(total time.Duration, v *visitor) (int, string) {
+func computeResponse(timeSpent time.Duration, v *visitor) (int, string) {
 	status := http.StatusOK
 	var msg string
 
@@ -96,11 +98,14 @@ func computeResponse(total time.Duration, v *visitor) (int, string) {
 		msg = "Error"
 		return status, msg
 	}
-	if total > v.deadline {
-		msg = fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", "Too slow", total, v.deadline)
+
+	info := fmt.Sprintf("Timelimit was: %.3s", v.deadline)
+	if timeSpent > v.deadline {
+		msg = fmt.Sprintf("Too slow: %.4s\n", timeSpent)
 	} else {
-		msg = fmt.Sprintf("%s: %.4s\nTimelimit was: %.3s", "Fast enough", total, v.deadline)
+		msg = fmt.Sprintf("Fast enough: %.4s\n", timeSpent)
 	}
+	msg += info
 	return status, msg
 }
 
@@ -111,7 +116,6 @@ func text(w http.ResponseWriter, code int, msg string) {
 }
 
 func (s *Server) render(w http.ResponseWriter) {
-	// v := s.pool.Get().(*visitor)
 	data := struct {
 		Counter   int
 		Deadline  float64
@@ -119,7 +123,6 @@ func (s *Server) render(w http.ResponseWriter) {
 	}{
 		s.counter,
 		s.pool.Get().(*visitor).deadline.Seconds(),
-		// s.visitors[s.counter].deadline.Seconds(),
 		s.build,
 	}
 	s.templ.Execute(w, data)

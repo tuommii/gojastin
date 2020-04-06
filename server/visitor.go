@@ -1,7 +1,6 @@
 package server
 
 import (
-	"log"
 	"strconv"
 	"time"
 )
@@ -64,13 +63,14 @@ func parseQuery(query string) (int, error) {
 func (s *Server) CleanVisitors() {
 	for {
 		time.Sleep(s.config.RemoveInterval)
-		for id, v := range s.visitors {
-			if time.Since(v.lastSeen) > s.config.VisitorAlive {
-				delete(s.visitors, id)
-				if s.config.Logging {
-					log.Println("visitor deleted!", id)
-				}
-			}
+		s.remove()
+	}
+}
+
+func (s *Server) remove() {
+	for id, v := range s.visitors {
+		if time.Since(v.lastSeen) > s.config.VisitorAlive {
+			delete(s.visitors, id)
 		}
 	}
 }

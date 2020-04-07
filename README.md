@@ -13,6 +13,8 @@ Gojastin is a server for measuring times between requests: https://timer.miikka.
 - [x] Github actions
 - [x] No external libraries
 - [x] Useful Makefile
+- [x] Hosted on DigitalOcean behind nginx
+
 
 ## Bechmarks
 | Function | Iterations | ns/op | B/op | allocs/op |

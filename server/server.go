@@ -162,7 +162,7 @@ const html = `<!DOCTYPE html>
 		<br />
 		<br />
 		<br />
-		<p>Created by: <a href="https://github.com/tuommii">Miikka Tuominen</a></p>
+		<p>Created by: <a href="https://miikka.xyz/">Miikka Tuominen</a></p>
 		<p class="compiled"><a href="https://github.com/tuommii/gojastin">Repository</a> on Github. Server compiled: {{.BuildTime}}</p>
 	</center>
 </body>

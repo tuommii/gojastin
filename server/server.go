@@ -116,6 +116,7 @@ func text(w http.ResponseWriter, code int, msg string) {
 }
 
 func (s *Server) render(w http.ResponseWriter) {
+	s.mu.Lock()
 	data := struct {
 		Counter   int
 		Deadline  float64
@@ -125,6 +126,7 @@ func (s *Server) render(w http.ResponseWriter) {
 		s.pool.Get().(*visitor).deadline.Seconds(),
 		s.build,
 	}
+	s.mu.Unlock()
 	s.templ.Execute(w, data)
 }
 

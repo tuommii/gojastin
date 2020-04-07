@@ -19,20 +19,20 @@ type visitor struct {
 // startTimer is called when first request is received
 func (s *Server) startTimer() {
 	s.mu.Lock()
-	s.counter++
 
+	s.counter++
 	// Prevent filling memory with unclosed timers
 	// also prevents integer overflow
 	if s.counter >= s.config.MaxVisitors {
 		s.counter = 0
 	}
-	s.mu.Unlock()
-
 	// Here time gets added to visitor
 	v := s.pool.Get().(*visitor)
 	v.id = s.counter
 	s.pool.Put(v)
 	s.visitors[s.counter] = v
+
+	s.mu.Unlock()
 }
 
 // stopTimer is called when second request is received

@@ -57,3 +57,7 @@ Navigate to http://localhost:3030/
 ## Screenshot
 
 ![Screenshot](/pic.png)
+
+
+## Todo
+- [ ] Make real UI

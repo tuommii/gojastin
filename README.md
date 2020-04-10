@@ -1,5 +1,5 @@
 <!-- ![Gopher](/soldering.svg) -->
-<img src="/soldering.svg" width="100" />
+<img src="/soldering.svg" width="400" />
 
 ![CI](https://github.com/tuommii/gojastin/workflows/CI/badge.svg)
 

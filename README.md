@@ -1,4 +1,5 @@
-![Gopher](/soldering.svg)
+<!-- ![Gopher](/soldering.svg) -->
+<img src="/soldering.svg" width="100" />
 
 ![CI](https://github.com/tuommii/gojastin/workflows/CI/badge.svg)
 
@@ -63,3 +64,9 @@ Navigate to http://localhost:3030/
 
 ## Todo
 - [ ] Make real UI
+
+
+
+## Other
+
+[Gopher](https://github.com/egonelbre/gophers)

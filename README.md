@@ -1,6 +1,8 @@
-## gojastin
+![Gopher](/soldering.svg)
+
 ![CI](https://github.com/tuommii/gojastin/workflows/CI/badge.svg)
 
+## gojastin
 Gojastin is a server for measuring times between requests: https://timer.miikka.xyz/
 
 >  The Challenge where i got a inspiration for this project was fun, but validation for solutions seemed far more interesting. So I decided try to do my own *Proof of Concept*. You can read the subject [here](https://github.com/hivehelsinki/remote-challs/tree/master/chall03).

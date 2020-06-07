@@ -1,6 +1,7 @@
 <!-- ![Gopher](/soldering.svg) -->
 <img src="/soldering.svg" width="400" />
 
+[![Build Status](https://dev.azure.com/tuommii/tuommii/_apis/build/status/tuommii.gojastin?branchName=master)](https://dev.azure.com/tuommii/tuommii/_build/latest?definitionId=2&branchName=master)
 ![CI](https://github.com/tuommii/gojastin/workflows/CI/badge.svg)
 
 ## gojastin

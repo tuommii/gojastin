@@ -16,6 +16,7 @@ Gojastin is a server for measuring times between requests: https://timer.miikka.
 - [x] Github actions
 - [x] No external libraries
 - [x] Useful Makefile
+- [x] Docker
 - [x] Hosted on DigitalOcean behind nginx
 
 
@@ -30,6 +31,18 @@ Gojastin is a server for measuring times between requests: https://timer.miikka.
 More testes by
 
 ## Running it on local
+
+### Docker
+
+Build
+
+`docker build . -t gojastin`
+
+Run
+
+`docker run -p 3030:3030 gojastin`
+
+### Without docker
 
 Clone:
 

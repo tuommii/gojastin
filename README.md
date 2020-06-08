@@ -10,15 +10,15 @@ Gojastin is a server for measuring times between requests: https://timer.miikka.
 >  The Challenge where i got a inspiration for this project was fun, but validation for solutions seemed far more interesting. So I decided to do my own *Proof of Concept*. You can read the subject [here](https://github.com/hivehelsinki/remote-challs/tree/master/chall03).
 
 ## Features
-- [x] [Live demo](https://timer.miikka.xyz/)
-- [x] Uses sync.Pool
-- [x] Benchmark testing
-- [x] Testing with awesome *httptest*
-- [x] Github actions
-- [x] No external libraries
-- [x] Useful Makefile
-- [x] Azure Pipelines & Docker
-- [x] Hosted on DigitalOcean behind nginx
+:heavy_check_mark: [Live demo](https://timer.miikka.xyz/)  
+:heavy_check_mark: Uses sync.Pool  
+:heavy_check_mark: Benchmark testing  
+:heavy_check_mark: Testing with awesome *httptest*  
+:heavy_check_mark: Github actions  
+:heavy_check_mark: No external libraries  
+:heavy_check_mark: Useful Makefile  
+:heavy_check_mark: Azure Pipelines & Docker  
+:heavy_check_mark: Hosted on DigitalOcean behind nginx  
 
 
 ## Bechmarks

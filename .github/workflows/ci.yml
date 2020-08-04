@@ -15,7 +15,7 @@ jobs:
         ref: "production"
 
     - name: Make directory
-      run: mkdir -p deploy/
+      run: mkdir -p deploy/test
 
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
@@ -31,7 +31,10 @@ jobs:
       run: |
         cd cmd/gojastin
         go get ./...
-        go build -v -o ../../deploy/run .
+        go build -v -o run .
+
+    - name: Copy binary
+      run: cp ./cmd/gojastin/run ./deploy/run
 
     - name: Name artifact
       uses: actions/upload-artifact@v2
@@ -61,7 +64,7 @@ jobs:
           username: ${{ secrets.USER }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
-          source: scoreboard
+          source: gojastin
           target: ${{ secrets.WORKDIR }}
 
       - name: Example command via SSH

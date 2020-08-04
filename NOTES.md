@@ -1,5 +1,7 @@
 # NOTES
 
+Not needed anymore
+
 ## Git
 `git tag -a v0.1.0 -m "my version 0.1.0"`
 

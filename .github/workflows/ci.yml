@@ -15,7 +15,7 @@ jobs:
         ref: "production"
 
     - name: Make directory
-      run: mkdir -p deploy
+      run: mkdir -p deploy/
 
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
